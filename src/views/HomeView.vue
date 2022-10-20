@@ -1,31 +1,18 @@
 <template>
-  <div class="home">
-    <Presentation/>
-    <Capabilities/>
-    <UnitList />
-  </div>
+  <HelloWorld />
 </template>
 
 <script>
+import { defineComponent } from 'vue';
 
-import Presentation from '@/components/Home/Presentation.vue'
-import Capabilities from '@/components/Home/Capabilities.vue'
-import UnitList from '@/components/Home/UnitList.vue'
+// Components
+import HelloWorld from '../components/HelloWorld.vue';
 
-
-export default {
+export default defineComponent({
   name: 'HomeView',
-  components: {
-    Presentation,
-    Capabilities,
-    UnitList
-  }
-}
-</script>
 
-<style>
-.home-section {
-    padding-top: 100px;
-    padding-bottom: 100px;
-}
-</style>
+  components: {
+    HelloWorld,
+  },
+});
+</script>

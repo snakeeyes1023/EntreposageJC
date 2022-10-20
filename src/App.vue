@@ -1,81 +1,43 @@
 <template>
-  <div id="app">
-    <n-config-provider :theme="theme">
-      <CustomNavbar />
-    </n-config-provider>
+  <v-app>
+    <v-app-bar :elevation="6">
 
-      <router-view />
+      <v-app-bar-title>Mesloc {{ currentUserName }}</v-app-bar-title>
+      <template v-slot:append>
+        
+        <v-btn icon="mdi-login" title="Se connecter" to="/login"></v-btn>
+        <v-btn icon="mdi-pan" title="Se connecter" to="/register"></v-btn>
 
-  </div>
+        <v-btn icon="mdi-dots-vertical"></v-btn>
+      </template>
+    </v-app-bar>
+
+    <v-main>
+      <v-container fluid>
+        <router-view></router-view>
+        <div v-if="!isLoggedIn">
+          <h1>Vous n'êtes pas bien authentifier...</h1>
+        </div>
+      </v-container>
+    </v-main>
+
+    <v-footer app>
+      <!-- -->
+    </v-footer>
+  </v-app>
 </template>
 
-<style>
-.float-right {
-    float: right;
-}
-
-.mt-2 {
-    margin-top: 1rem;
-}
-
-
-.mx-5 {
-    margin-left: 1em;
-    margin-right: 1em;
-}
-.p-2 {
-    padding: 0.5rem;
-}
-</style>
-
 <script>
-import CustomNavbar from "./components/Shared/CustomNavbar.vue";
-import { defineComponent, computed } from "vue";
-import { useOsTheme, darkTheme } from "naive-ui";
+import { mapGetters } from "vuex";
 
+export default {
+  name: 'App',
 
-
-export default defineComponent({
-  setup() {
-    const osThemeRef = useOsTheme();
-    return {
-      theme: computed(() => osThemeRef.value === "dark" ? darkTheme : null),
-      osTheme: osThemeRef
-    };
-  },
   data: () => ({
-    active: "guide"
+    //
   }),
-  components: { CustomNavbar }
-});
-
+  computed: {
+    ...mapGetters(["isLoggedIn", "currentUserName"])
+  }
+}
 </script>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@200;300;400;500;700;800;900&display=swap');
-
-
-#app {
-  font-family: 'Barlow', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #ffffff;
-}
-
-.vs-navbar button {
-  font-size: 1rem;
-  font-family: 'Barlow', sans-serif;
-  font-weight: 500;
-  margin: 0.4rem;
-}
-
-.vs-navbar__item {
-  font-size: 2rem;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background: #272727;
-}
-</style>

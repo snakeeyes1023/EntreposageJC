@@ -1,14 +1,14 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import naive from 'naive-ui'
-import i18n from './i18n'
+import vuetify from './plugins/vuetify'
+import { loadFonts } from './plugins/webfontloader'
+import store from "./store";
 
-const myV3App = createApp(App)
+loadFonts()
 
-myV3App
-.use(naive)
-.use(router)
-.use(i18n)
-
-myV3App.mount('#app')
+createApp(App)
+  .use(router)
+  .use(store)
+  .use(vuetify)
+  .mount('#app')
