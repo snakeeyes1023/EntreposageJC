@@ -14,6 +14,12 @@ const store = createStore({
       localStorage.setItem('token', token);
       state.token = token;
     },
+    logout(state) {
+      state.user = null;
+      state.token = null;
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+    }
   },
   actions: {},
   getters: {
@@ -32,6 +38,11 @@ const store = createStore({
       state.user = localStorage.getItem('user');
       state.token = localStorage.getItem('token');
 
+      if (state.user == undefined || state.user == "undefined") {
+        return "Inconnue";
+      }
+
+      console.log(state.user)
       return state.user;
     }
   },

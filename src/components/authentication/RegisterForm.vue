@@ -1,33 +1,36 @@
 <template>
-    <v-card class="mx-auto" max-width="500">
+    <v-card class="mx-auto mt-3" max-width="500">
+        <v-card-title class="my-5"> S'inscrire</v-card-title>
+        <v-spacer></v-spacer>
         <v-card-text>
             <v-form ref="form" v-model="valid" lazy-validation>
-
                 <v-text-field v-model="email" label="Courriel" required></v-text-field>
                 <v-text-field v-model="username" label="nom d'utilisateur" required></v-text-field>
                 <v-text-field v-model="firstname" label="Prénom" required></v-text-field>
                 <v-text-field v-model="lastname" label="Nom de famille" required></v-text-field>
                 <v-text-field v-model="password" label="Mot de passe" required></v-text-field>
                 <v-text-field v-model="repassword" label="Confirmation du mot de passe" required></v-text-field>
-
             </v-form>
         </v-card-text>
+        <v-spacer></v-spacer>
         <v-card-actions>
-            <v-btn text class="float-right" @click="register" color=" accent-4">
+            <v-spacer></v-spacer>
+            <v-btn text @click="register" :disable="isDisable"  class="mt-auto" color="info">
                 S'inscrire
             </v-btn>
         </v-card-actions>
     </v-card>
-
 </template>
-  
+
 <script>
 
 export default {
-    name: 'CustomRegister',
+    name: 'RegisterForm',
     methods: {
         async register(e) {
             e.preventDefault();
+
+            this.isDisable = true;
 
             var body = JSON.stringify({
                 email: this.email,
@@ -49,6 +52,9 @@ export default {
             if (response.status == 200) {
                 this.$router.push("/login");
             }
+            else {
+                this.isDisable = false;
+            }
         },
     }, data: () => ({
         valid: false,
@@ -58,6 +64,7 @@ export default {
         username: '',
         password: '',
         repassword: '',
+        isDisable: false,
     }),
 }
 </script>
