@@ -38,7 +38,7 @@ export default {
                 passwordConfirmation: this.repassword,
             });
 
-            const response = await fetch("https://localhost:7064/Users/CreateAccount", {
+            const response = await fetch(process.env.VUE_APP_URL_API + "/Users/CreateAccount", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

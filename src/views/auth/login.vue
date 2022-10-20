@@ -34,7 +34,7 @@ export default {
                     password: this.password,
                 });
             
-            const response = await fetch("https://localhost:7064/Users/Authenticate", {
+            const response = await fetch(process.env.VUE_APP_URL_API + "/Users/Authenticate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
