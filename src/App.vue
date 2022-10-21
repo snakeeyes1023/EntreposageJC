@@ -3,12 +3,7 @@
     <v-app-bar :elevation="6">
 
       <v-app-bar-title>
-        <v-img
-          :src="require('./assets/logo-white.png')"
-          class="my-3"
-          contain
-          height="30"
-        />
+        Gestion réservation d'unité
       </v-app-bar-title>
       <template v-slot:append>
         <v-divider vertical class="mx-5"></v-divider>
