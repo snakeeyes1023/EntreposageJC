@@ -2,9 +2,7 @@
 
 ## FTP Login
 
-- hote : nfa.mesloc.com
-- User : reservation@mesloc.com
-- Password : Hsd2-2;$bqS9
+
 
 ## Project setup
 ```

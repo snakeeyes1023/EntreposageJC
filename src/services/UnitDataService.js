@@ -18,8 +18,7 @@ class UnitDataService {
   }
 
   updateById(id, data) {
-
-    let body = this.convertToJson(data);
+    let body = this.convertToJson(data, id);
 
     return http.put(`/Units/${id}`, body);
   }
@@ -34,17 +33,21 @@ class UnitDataService {
   }
 
 
-  convertToJson(unitForm) {
-    let body = JSON.stringify({
+  convertToJson(unitForm, id = null) {
+    let object = {
       name: unitForm.name,
       description: unitForm.description,
       displayPricing: Number(unitForm.displayPricing),
       quantity: Number(unitForm.quantity),
       isTaxable: unitForm.isTaxable === "true",
       tags: [1],
-    });
+    }
 
-    return body;
+    if (id !== null) {
+      object["id"] = id;
+    }
+
+    return JSON.stringify(object);
   }
 
 }

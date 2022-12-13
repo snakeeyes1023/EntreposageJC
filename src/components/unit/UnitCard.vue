@@ -8,24 +8,30 @@
         <v-card-actions>
             <v-spacer></v-spacer>
 
-            <v-btn  color="success" prepend-icon="mdi-calendar">
+            <v-btn color="success" prepend-icon="mdi-calendar">
                 Réserver
             </v-btn>
 
             <v-divider vertical class="mx-5"></v-divider>
-            <v-btn variant="outlined" color="warning" prepend-icon="mdi-pencil-outline">
+            <v-btn variant="outlined" color="warning" prepend-icon="mdi-pencil-outline" @click="this.updateUnit()">
                 Modifier
             </v-btn>
 
-            <v-btn variant="" color="error" icon="mdi-delete-outline" @click="this.deleteUnit()" >
+            <v-btn variant="" color="error" icon="mdi-delete-outline" @click="this.deleteUnit()">
             </v-btn>
 
         </v-card-actions>
     </v-card>
+    <v-row justify="center">
+        <v-dialog height="auto" class="customBackground" v-model="showDialog" persistent>
+            <UnitForm :close-form="closeForm" :id="card.id" />
+        </v-dialog>
+    </v-row>
 </template>
 
 <script>
 import UnitDataService from "../../services/UnitDataService";
+import UnitForm from "@/components/unit/UnitForm.vue";
 
 export default {
     name: 'UnitCard',
@@ -35,11 +41,15 @@ export default {
             required: true,
         },
     },
-    methods : {
+    data() {
+        return {
+            showDialog: false
+        };
+    },
+    methods: {
         deleteUnit() {
             UnitDataService.deleteById(this.card.id).then((response) => {
-                if (response.status === 200)
-                {
+                if (response.status === 200) {
                     try {
                         this.$emit('refreshUnits')
                     }
@@ -50,8 +60,17 @@ export default {
                 else {
                     console.error(response)
                 }
-            })          
+            })
+        },
+        updateUnit() {          
+            this.showDialog = true
+        },
+        closeForm() {
+            this.showDialog = false
+            this.$emit('refreshUnits')
         }
-    }
+    },
+    components: { UnitForm }
+
 }
 </script>

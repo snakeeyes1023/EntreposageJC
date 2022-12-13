@@ -66,9 +66,11 @@ export default {
     name: 'UnitForm',
     props: {
         closeForm: { type: Function },
+        id: { type: String },
     },
     data: () => ({
         formIsValid: false,
+
         currentUnit: {
             id: null,
             displayPricing: null,
@@ -80,6 +82,17 @@ export default {
         },
         loading: false,
     }),
+    mounted() {
+        if (this.id) {
+            this.loading = true
+            UnitDataService.getById(this.id).then((response) => {
+                console.log(response)
+                this.currentUnit = response.data
+            }).finally(() => {
+                this.loading = false
+            })
+        }
+    },    
     methods: {
         async onSubmit() {
             if (!this.formIsValid) return
