@@ -32,7 +32,7 @@ export default {
 
             this.isDisable = true;
 
-            var body = JSON.stringify({
+            let body = JSON.stringify({
                 email: this.email,
                 username: this.username,
                 firstname: this.firstname,
