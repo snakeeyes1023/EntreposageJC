@@ -20,11 +20,11 @@
             <v-divider vertical class="mx-5"></v-divider>
 
             <div v-if="!isLoggedIn">
-                <v-btn class="my-auto mx-1" prepend-icon="mdi-login" to="/login">
+                <v-btn class="my-auto mx-1" prepend-icon="mdi-login" to="/auth/login">
                     Se connecter
                 </v-btn>
 
-                <v-btn class="my-auto mx-1" to="/register" prepend-icon="mdi-account-plus">
+                <v-btn class="my-auto mx-1" to="/auth/register" prepend-icon="mdi-account-plus">
                     S'inscrire
                 </v-btn>
             </div>

@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import router from "./router";
 let axiosInstance = axios.create({
   baseURL: process.env.VUE_APP_URL_API,  
 });
@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
   , (error) => {
     if (error.response.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/login";
+      router.push("/auth/login");
     }
     return Promise.reject(error);
   }

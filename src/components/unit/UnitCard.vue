@@ -8,7 +8,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
 
-            <v-btn color="success" prepend-icon="mdi-calendar">
+            <v-btn color="success" prepend-icon="mdi-calendar" @click="this.reserve()">
                 Réserver
             </v-btn>
 
@@ -27,11 +27,17 @@
             <UnitForm :close-form="closeForm" :id="card.id" />
         </v-dialog>
     </v-row>
+    <v-row justify="center">
+        <v-dialog max-height="600px" max-width="600px" class="customBackground" v-model="showReservationDialog" persistent>
+            <ReservationForm :close-form="closeReservationForm" :unitData="card" />
+        </v-dialog>
+    </v-row>
 </template>
 
 <script>
 import UnitDataService from "../../services/UnitDataService";
 import UnitForm from "@/components/unit/UnitForm.vue";
+import ReservationForm from "../reservation/ReservationForm.vue";
 
 export default {
     name: 'UnitCard',
@@ -43,7 +49,8 @@ export default {
     },
     data() {
         return {
-            showDialog: false
+            showDialog: false,
+            showReservationDialog: false,
         };
     },
     methods: {
@@ -68,9 +75,15 @@ export default {
         closeForm() {
             this.showDialog = false
             this.$emit('refreshUnits')
+        },
+        closeReservationForm() {
+            this.showReservationDialog = false
+        },
+        reserve() {
+            this.showReservationDialog = true
         }
     },
-    components: { UnitForm }
+    components: { UnitForm, ReservationForm }
 
 }
 </script>

@@ -15,13 +15,13 @@ const routes = [
   },
   {
     public : true,
-    path: "/login",
+    path: "/auth/login",
     name: "Login",
     component: () => import(/* webpackChunkName: "about" */ '../views/auths/Login.vue')  
   },
   {
     public : true,
-    path: "/register",
+    path: "/auth/register",
     name: "Register",
     component: () => import(/* webpackChunkName: "about" */ '../views/auths/Register.vue')
   },
@@ -48,7 +48,7 @@ router.beforeEach((to, from, next) => {
   const loggedIn = localStorage.getItem('user');
 
   if (authRequired && !loggedIn) {
-    next('/login');
+    next('/auth/login');
   } else {
     next();
   }
