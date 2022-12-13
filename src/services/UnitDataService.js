@@ -1,24 +1,30 @@
 import http from "../http-common";
 
 class UnitDataService {
-        
+
   getAll() {
     return http.get("/Units");
   }
 
-  get(id) {
+  getById(id) {
     return http.get(`/Units/${id}`);
   }
 
-  create(data) {
-    return http.post("/Units", data);
+  createNewOne(unitForm) {
+
+    let body = this.convertToJson(unitForm);
+
+    return http.post("/Units", body);
   }
 
-  update(id, data) {
-    return http.put(`/Units/${id}`, data);
+  updateById(id, data) {
+
+    let body = this.convertToJson(data);
+
+    return http.put(`/Units/${id}`, body);
   }
 
-  delete(id) {
+  deleteById(id) {
     return http.delete(`/Units/${id}`);
   }
 
@@ -26,6 +32,21 @@ class UnitDataService {
   findByTitle(title) {
     return http.get(`/Units?title=${title}`);
   }
+
+
+  convertToJson(unitForm) {
+    let body = JSON.stringify({
+      name: unitForm.name,
+      description: unitForm.description,
+      displayPricing: Number(unitForm.displayPricing),
+      quantity: Number(unitForm.quantity),
+      isTaxable: unitForm.isTaxable === "true",
+      tags: [1],
+    });
+
+    return body;
+  }
+
 }
 
 export default new UnitDataService();
