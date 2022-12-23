@@ -4,6 +4,15 @@
             <v-form v-model="formIsValid" @submit.prevent="onSubmit">
                 <v-container>
                     <v-row>
+                        <v-col v-if="errorMessages" cols="12" sm="12">
+                            <v-alert v-if="errorMessages" type="error" class="my-3">
+                                <ul>
+                                    <li v-for="message in errorMessages" :key="message">
+                                        {{ message }}
+                                    </li>
+                                </ul>                
+                            </v-alert>
+                        </v-col>
                         <v-col cols="12" sm="12">
                             <v-text-field v-model="currentUnit.name" :readonly="loading"
                                 :rules="[v => !!v || this.t('fieldIsRequired', [this.t('name')])]" :label="t('name')"
@@ -29,18 +38,17 @@
                         </v-col>
                         <v-divider></v-divider>
                         <v-col cols="12">
-                            
+
                             <!--add icon check for all tags -->
-                            <v-switch  v-for="tag in tags" color="primary" v-bind:key="tag.id" v-model="tag.isSelected"
+                            <v-switch v-for="tag in tags" color="primary" v-bind:key="tag.id" v-model="tag.isSelected"
                                 :label="t(tag.text)"></v-switch>
 
 
-                           
+
                         </v-col>
                         <v-divider></v-divider>
                         <v-col cols="12">
-                            <v-switch color="primary" v-model="currentUnit.isTaxable"
-                                :label="t('taxable')"></v-switch>
+                            <v-switch color="primary" v-model="currentUnit.isTaxable" :label="t('taxable')"></v-switch>
                         </v-col>
 
                     </v-row>
@@ -105,16 +113,17 @@ export default {
                 icon: 'mdi-fire',
             },
             {
-                text:  'allTimeAccess',
+                text: 'allTimeAccess',
                 icon: 'mdi-open-in-new',
                 isSelected: false,
                 value: 1,
             }
         ],
         loading: false,
+        errorMessages: null,
     }),
     mounted() {
-        
+
         if (this.id) {
             this.loading = true
             UnitDataService.getById(this.id).then((response) => {
@@ -141,6 +150,7 @@ export default {
 
             this.currentUnit.tags = this.tags.filter(tag => tag.isSelected).map(tag => tag.value)
 
+
             let result = !this.currentUnit.id
                 ? UnitDataService.createNewOne(this.currentUnit)
                 : UnitDataService.updateById(this.currentUnit.id, this.currentUnit);
@@ -152,9 +162,18 @@ export default {
                 else {
                     console.warn(response)
                 }
+
+            }).catch((error) => {
+                if (error.response && error.response.data && error.response.data.errors) {
+                    this.errorMessages = error.response.data.errors
+                }
+                else {
+                    this.errorMessages = error.response.message
+                }
             }).finally(() => {
                 this.loading = false
             });
+
 
 
         },
