@@ -1,20 +1,37 @@
 <template>
     <v-card>
-        <v-img :src="card.src" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-            height="150px" cover>
-            <v-card-title class="text-white" v-text="card.name"></v-card-title>
+        <v-img :src="card.src" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.7), rgba(0,0,0,.8)">
+            <v-card-title class="text-white">
+                <span>{{ card.name }}</span>
+                 <span class="pricing">
+                    ({{ card.displayPricing }}$)
+                </span>
+            </v-card-title>
         </v-img>
+
+        <v-card-text>
+            <v-row>
+                <v-col cols="12" sm="12">
+                    <h5><b>{{ t("description") }}:</b></h5>
+                </v-col>
+                <v-col cols="12" sm="6">
+                    <p>{{ card.description }}</p>
+                </v-col>
+            </v-row>
+        </v-card-text>
+
+        <v-divider></v-divider>
 
         <v-card-actions>
             <v-spacer></v-spacer>
 
             <v-btn color="success" prepend-icon="mdi-calendar" @click="this.reserve()">
-                Réserver
+                {{ t("reserve") }}
             </v-btn>
 
             <v-divider vertical class="mx-5"></v-divider>
             <v-btn variant="outlined" color="warning" prepend-icon="mdi-pencil-outline" @click="this.updateUnit()">
-                Modifier
+                {{ t("edit") }}
             </v-btn>
 
             <v-btn variant="" color="error" icon="mdi-delete-outline" @click="this.deleteUnit()">
@@ -28,16 +45,27 @@
         </v-dialog>
     </v-row>
     <v-row justify="center">
-        <v-dialog max-height="600px" max-width="600px" class="customBackground" v-model="showReservationDialog" persistent>
+        <v-dialog max-height="600px" max-width="600px" class="customBackground" v-model="showReservationDialog"
+            persistent>
             <ReservationForm :close-form="closeReservationForm" :unitData="card" />
         </v-dialog>
     </v-row>
 </template>
 
+
+<style>
+.pricing {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #ff9800;
+}
+</style>
+
 <script>
 import UnitDataService from "../../services/UnitDataService";
 import UnitForm from "@/components/unit/UnitForm.vue";
 import ReservationForm from "../reservation/ReservationForm.vue";
+import { useI18n } from "vue-i18n";
 
 export default {
     name: 'UnitCard',
@@ -53,7 +81,16 @@ export default {
             showReservationDialog: false,
         };
     },
+    setup() {
+        const { t } = useI18n()
+        return {
+            t
+        };
+    },
     methods: {
+        /**
+         * Supprime l'unité
+         */
         deleteUnit() {
             UnitDataService.deleteById(this.card.id).then((response) => {
                 if (response.status === 200) {
@@ -69,16 +106,28 @@ export default {
                 }
             })
         },
-        updateUnit() {          
+        /**
+         * Ouvre le formulaire de modification
+         */
+        updateUnit() {
             this.showDialog = true
         },
+        /**
+         * Ferme le formulaire de modification
+         */
         closeForm() {
             this.showDialog = false
             this.$emit('refreshUnits')
         },
+        /**
+         * Ferme le formulaire de réservation
+         */
         closeReservationForm() {
             this.showReservationDialog = false
         },
+        /**
+         * Ouvre le formulaire de réservation
+         */
         reserve() {
             this.showReservationDialog = true
         }

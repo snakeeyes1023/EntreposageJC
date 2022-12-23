@@ -5,23 +5,27 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12" sm="12">
-                            <v-text-field v-model="currentUnit.name" :readonly="loading" :rules="[required]"
-                                class="mb-2" clearable label="Nom à afficher"></v-text-field>
+                            <v-text-field v-model="currentUnit.name" :readonly="loading"
+                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('name')])]" :label="t('name')"
+                                required class="mb-2" clearable></v-text-field>
 
                         </v-col>
                         <v-col cols="12" sm="6">
 
-                            <v-text-field v-model="currentUnit.displayPricing" :readonly="loading" :rules="[required]"
-                                class="mb-2" clearable label="Prix"></v-text-field>
+                            <v-text-field v-model="currentUnit.displayPricing" :readonly="loading"
+                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('price')])]" :label="t('price')"
+                                required class="mb-2" clearable></v-text-field>
                         </v-col>
 
                         <v-col cols="12" sm="6">
-                            <v-text-field v-model="currentUnit.quantity" :readonly="loading" :rules="[required]"
-                                class="mb-2" clearable label="Quantité"></v-text-field>
+                            <v-text-field v-model="currentUnit.quantity" :readonly="loading"
+                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('quantity')])]" :label="t('quantity')"
+                                required class="mb-2" clearable></v-text-field>
                         </v-col>
                         <v-col cols="12">
                             <v-textarea auto-grow v-model="currentUnit.description" :readonly="loading"
-                                :rules="[required]" class="mb-2" clearable label="Description"></v-textarea>
+                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('description')])]" :label="t('description')"
+                                required class="mb-2" clearable></v-textarea>
                         </v-col>
                         <v-divider></v-divider>
                         <v-col cols="12">
@@ -40,17 +44,18 @@
 
                 <br>
 
-                <v-btn :disabled="!formIsValid" :loading="loading" class="float-right" color="info" size="large" prepend-icon="mdi-check"
-                    type="submit" variant="elevated">
+                <v-btn :disabled="!formIsValid" :loading="loading" class="float-right" color="info" size="large"
+                    prepend-icon="mdi-check" type="submit" variant="elevated">
                     <div v-if="!!currentUnit.id">
-                        <span>Modifier</span>
+                        <span>{{ t("edit") }}</span>
                     </div>
                     <div v-else>
-                        <span>Créer</span>
+                        <span>{{ t("create") }}</span>
                     </div>
                 </v-btn>
-                <v-btn class="float-right mx-3" color="default" size="large" @click="closeForm()" variant="elevated" prepend-icon="mdi-cancel">
-                    Annuler
+                <v-btn class="float-right mx-3" color="default" size="large" @click="closeForm()" variant="elevated"
+                    prepend-icon="mdi-cancel">
+                    {{ t("cancel") }}
                 </v-btn>
             </v-form>
         </v-card>
@@ -60,6 +65,7 @@
 
 
 import UnitDataService from "../../services/UnitDataService";
+import { useI18n } from 'vue-i18n'
 
 
 export default {
@@ -67,6 +73,12 @@ export default {
     props: {
         closeForm: { type: Function },
         id: { type: String },
+    },
+    setup() {
+        const { t } = useI18n()
+        return {
+            t
+        };
     },
     data: () => ({
         formIsValid: false,
@@ -92,22 +104,22 @@ export default {
                 this.loading = false
             })
         }
-    },    
+    },
     methods: {
         async onSubmit() {
             if (!this.formIsValid) return
 
             this.loading = true
 
-            let result = !this.currentUnit.id 
-            ? UnitDataService.createNewOne(this.currentUnit) 
-            : UnitDataService.updateById(this.currentUnit.id, this.currentUnit);
+            let result = !this.currentUnit.id
+                ? UnitDataService.createNewOne(this.currentUnit)
+                : UnitDataService.updateById(this.currentUnit.id, this.currentUnit);
 
             result.then((response) => {
                 if (response.status === 200) {
                     this.closeForm()
                 }
-                else{
+                else {
                     console.warn(response)
                 }
             }).finally(() => {
@@ -117,7 +129,7 @@ export default {
 
         },
         required(v) {
-            return !!v || 'Ce champ est requis'
+            return !!v || this.t("fieldIsRequired")
         },
     },
 }

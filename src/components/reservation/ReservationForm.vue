@@ -5,8 +5,8 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12" sm="12">
-                            <p>Veuillez choisir les dates de réservation</p>
-                            <Datepicker v-model="dates" range min-range="14" />
+                            <p>{{ t("chooseReservationDateRange") }}</p>
+                            <Datepicker v-model="dates" range min-range="14"  />
                         </v-col>
                     </v-row>
 
@@ -15,18 +15,18 @@
                         <v-col cols="12" sm="12">
                             <v-card outlined>
                                 <v-card-title>
-                                    <h3 class="headline mb-0">Détail de la réservation</h3>
+                                    <h4 class="headline mb-0">{{ t("reservationDetails") }}</h4>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-row>
                                         <v-col cols="12" sm="6">
-                                            <p>Unité: {{ unitData.name }}</p>
+                                            <p>{{ t("local") }}: {{ unitData.name }}</p>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <p>Prix: {{ unitData.displayPricing }}</p>
+                                            <p>{{ t("price") }}: {{ unitData.displayPricing }}</p>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <p>Quantité: {{ unitData.quantity }}</p>
+                                            <p>{{ t("quantity") }}: {{ unitData.quantity }}</p>
                                         </v-col>
                                         <v-col cols="12" sm="6">
                                             <p>Chauffée: {{ unitData.tags[0] }}</p>
@@ -35,10 +35,10 @@
                                             <p>Chauffée et éclairé: {{ unitData.tags[1] }}</p>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <p>Taxable: {{ unitData.isTaxable }}</p>
+                                            <p>{{ t("isTaxable") }}: {{ unitData.isTaxable }}</p>
                                         </v-col>
                                         <v-col v-if="dates != undefined" cols="12" sm="6">
-                                            <p>Date : du {{ dates[0] }} au {{ dates[1] }}</p>
+                                            <p>{{ t("dateRange") }}:  {{ dates[0] }} - {{ dates[1] }}</p>
                                         </v-col>
                                     </v-row>
                                 </v-card-text>
@@ -51,12 +51,12 @@
 
                 <v-btn class="float-right mx-3" color="default" size="large" @click="this.closeForm()"
                     variant="elevated" prepend-icon="mdi-cancel">
-                    Annuler
+                    {{ t("cancel") }}
                 </v-btn>
 
                 <v-btn :disabled="!dates" :loading="loading" class="float-right" color="info" size="large"
                     prepend-icon="mdi-check-outline" type="submit" variant="elevated">
-                    <span>Confirmer la réservation</span>
+                    <span>{{ t("confirmReservation") }}</span>
                 </v-btn>
 
             </v-form>
@@ -69,7 +69,7 @@
 
 import ReservationDataService from "../../services/ReservationDataService";
 import { ref } from 'vue';
-
+import { useI18n } from 'vue-i18n'
 
 export default {
     name: 'ReservationForm',
@@ -83,23 +83,30 @@ export default {
     }),
     setup() {
         const dates = ref();
+        const { t } = useI18n()
 
         return {
             dates,
+            t
         }
     },
     methods: {
+        /**
+         * Envoie la requête pour créer la réservation
+         * 
+         * @param {*} event 
+         */
         async onSubmit(event) {
             event.preventDefault()
 
             this.loading = true
 
-            alert(this.dates)
-
             try {
+                // envoie la requête pour créer la réservation
                 ReservationDataService.createNewReservation(this.dates, this.unitData.id)
                     .then((response) => {
                         if (response.status === 200) {
+                            // on ferme le formulaire 
                             this.closeForm()
                         }
                         else {
@@ -115,8 +122,6 @@ export default {
             } finally {
                 this.loading = false
             }
-
-
         },
         required(v) {
             return !!v || 'Ce champ est requis'

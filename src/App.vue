@@ -10,24 +10,25 @@
     </v-main>
 
     <v-footer app>
-      <!-- -->
+      <span class="white--text"><b>Jonathan Côté &copy; {{ currentYear }}</b></span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
 import NavbarDefault from "./components/shared/NavbarDefault.vue";
+import { useI18n } from 'vue-i18n'
 
 export default {
-    name: "App",
-    data: () => ({}),
-    methods: {
-        ...mapMutations(["logout"])
-    },
-    computed: {
-        ...mapGetters(["isLoggedIn", "currentUserName"])
-    },
-    components: { NavbarDefault }
+  setup() {
+    return {
+      t: useI18n().t
+    };
+  },
+  name: "App",
+  data: () => ({
+    currentYear: new Date().getFullYear()
+  }),
+  components: { NavbarDefault }
 }
 </script>

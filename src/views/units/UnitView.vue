@@ -3,7 +3,7 @@
         <v-row>
             <v-col :cols="12">
                 <v-btn color="" class="float-right my-5" prepend-icon="mdi-plus" @click="showDialog = true">
-                    Ajouter une unité
+                    {{ t("createNewUnit") }}
                 </v-btn>
             </v-col>
         </v-row>
@@ -27,13 +27,21 @@
 import UnitDataService from "../../services/UnitDataService";
 import UnitForm from "@/components/unit/UnitForm.vue";
 import UnitCard from "../../components/unit/UnitCard.vue";
+import { useI18n } from "vue-i18n";
 
 export default {
     name: "CustomUnitView",
     data() {
         return {
             showDialog: false,
-            units: []
+            units: [],
+            langs: ['fr', 'en'],
+        };
+    },
+    setup() {
+        const { t } = useI18n()
+        return {
+            t
         };
     },
     methods: {
