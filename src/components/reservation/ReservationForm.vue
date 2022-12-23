@@ -25,21 +25,6 @@
                                         <v-col cols="12" sm="6">
                                             <p>{{ t("price") }}: {{ unitData.displayPricing }}</p>
                                         </v-col>
-                                        <v-col cols="12" sm="6">
-                                            <p>{{ t("quantity") }}: {{ unitData.quantity }}</p>
-                                        </v-col>
-                                        <v-col cols="12" sm="6">
-                                            <p>Chauffée: {{ unitData.tags[0] }}</p>
-                                        </v-col>
-                                        <v-col cols="12" sm="6">
-                                            <p>Chauffée et éclairé: {{ unitData.tags[1] }}</p>
-                                        </v-col>
-                                        <v-col cols="12" sm="6">
-                                            <p>{{ t("isTaxable") }}: {{ unitData.isTaxable }}</p>
-                                        </v-col>
-                                        <v-col v-if="dates != undefined" cols="12" sm="6">
-                                            <p>{{ t("dateRange") }}:  {{ dates[0] }} - {{ dates[1] }}</p>
-                                        </v-col>
                                     </v-row>
                                 </v-card-text>
                             </v-card>

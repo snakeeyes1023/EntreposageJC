@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col :cols="12">
+            <v-col :cols="12" >
                 <v-btn color="" class="float-right my-5" prepend-icon="mdi-plus" @click="showDialog = true">
                     {{ t("createNewUnit") }}
                 </v-btn>
@@ -9,8 +9,33 @@
         </v-row>
     </v-container>
     <v-container fluid>
+
+        <v-card width="100%">
+            <v-card-title>
+                <v-row>
+                    <v-col cols="12">
+                        <p>{{ t("priceFilter") }}</p>
+                    </v-col>
+                </v-row>
+            </v-card-title>
+            <v-card-text>
+                <v-row>
+                    <v-col lg="10" md="12" sm="12" xs="12">
+                        <v-range-slider v-model="priceFilter" :min="priceFilterLimit.min" :max="priceFilterLimit.max"
+                            step="100" thumb-label="always"></v-range-slider>
+                    </v-col>
+                    <v-col lg="2" md="12" sm="12" xs="12" >
+                        <v-btn color="primary" variant="outlined" class="float-right" width="100%"
+                            prepend-icon="mdi-loupe" @click="retrieveUnits()">
+                            {{ t("search") }}
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
+
         <v-row dense>
-            <v-col v-for="card in units" :key="card.id" :cols="4">
+            <v-col v-for="card in units" :key="card.id"  lg="4" md="6" sm="12" xs="12">
                 <UnitCard :card="card" @refreshUnits="retrieveUnits()" />
             </v-col>
         </v-row>
@@ -35,7 +60,13 @@ export default {
         return {
             showDialog: false,
             units: [],
-            langs: ['fr', 'en'],
+            priceFilterLimit: {
+                min: 0,
+                max: 1000,
+            },
+            priceFilter: [0, 1000],
+
+            customFilterApplied: false,
         };
     },
     setup() {
@@ -45,14 +76,26 @@ export default {
         };
     },
     methods: {
-        retrieveUnits() {
-            UnitDataService.getAll()
-                .then(response => {
-                    this.units = response.data;
-                })
-                .catch(e => {
-                    console.log(e);
-                });
+        async retrieveUnits() {
+
+            try {
+                if (this.priceFilter[0] != this.priceFilterLimit.min || this.priceFilter[1] != this.priceFilterLimit.max) {
+                    const filteredUnits = await UnitDataService.getBetweenPrice(this.priceFilter[0], this.priceFilter[1]);
+                    this.units = filteredUnits.data;
+                }
+                else {
+                    const allUnits = await UnitDataService.getAll();
+                    this.units = allUnits.data;
+
+
+                    this.priceFilterLimit.min = Math.min(...this.units.map(unit => unit.displayPricing));
+                    this.priceFilterLimit.max = Math.max(...this.units.map(unit => unit.displayPricing));
+                    this.priceFilter = [this.priceFilterLimit.min, this.priceFilterLimit.max];
+                }
+            }
+            catch (e) {
+                console.log(e);
+            }
         },
         closeForm() {
             this.showDialog = false;

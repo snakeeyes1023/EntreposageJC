@@ -12,6 +12,17 @@ class UnitDataService {
   }
 
   /**
+   * Retourne la liste des unités par prix
+   * 
+   * @param {*} min 
+   * @param {*} max 
+   * @returns 
+   */
+  getBetweenPrice(min, max) {
+    return http.get(`/Units/${min}/${max}`);
+  }
+
+  /**
    * Retourne une unité par son id
    * 
    * @param {*} id 
@@ -58,6 +69,17 @@ class UnitDataService {
   }
 
   /**
+   * Change la visibilité d'une unité
+   * 
+   * @param {*} id 
+   * @param {*} visibility 
+   * @returns 
+   */
+  updateVisibility(id, visibility) {
+    return http.patch(`/Units/${id}/ChangeVisibility/${visibility}`);
+  }
+
+  /**
    * Convertit un formulaire en objet JSON
    * 
    * @param {*} unitForm 
@@ -65,13 +87,14 @@ class UnitDataService {
    * @returns 
    */
   convertToJson(unitForm, id = null) {
+
     let object = {
       name: unitForm.name,
       description: unitForm.description,
       displayPricing: Number(unitForm.displayPricing),
       quantity: Number(unitForm.quantity),
-      isTaxable: unitForm.isTaxable === "true",
-      tags: [1],
+      isTaxable: unitForm.isTaxable,
+      tags: unitForm.tags,
     }
 
     if (id !== null) {

@@ -1,4 +1,5 @@
 {
+  "app.title" : "Gestion de locaux",
   "welcome": "Bonjour",
   "manageLocals": "Gestion de locaux",
   "locals": "Locaux",
@@ -17,6 +18,10 @@
   "create" : "Créer",
   "name" : "Nom",
   "createNewUnit" : "Créer un nouveau local",
+  "search" : "Rechercher",
+  "priceFilter" : "Filtrer par prix",
+  "heated": "Chauffé",
+  "allTimeAccess": "Accès 24/7",
 
 
 

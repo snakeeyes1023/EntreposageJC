@@ -25,6 +25,10 @@ export default {
       t: useI18n().t
     };
   },
+  mounted() {
+    document.title = this.t('app.title');
+    this.$i18n.locale = localStorage.getItem('lang') || "fr";
+  },
   name: "App",
   data: () => ({
     currentYear: new Date().getFullYear()

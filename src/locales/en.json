@@ -1,4 +1,5 @@
 {
+  "app.title" : "Local reservation",
     "welcome": "Hello",
     "manageLocals": "Manage locals",
     "locals": "Locals",
@@ -17,6 +18,9 @@
     "create": "Create",
     "name": "Name",
     "createNewUnit": "Create new local",
+    "search": "Search",
+    "priceFilter": "Price filter",
+    "heated": "Heated",
 
     "errorConnectingToServer": "Error connecting to server",
     "chooseReservationDateRange": "Choose reservation date range",

@@ -1,47 +1,39 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import AuthDataService from '@/services/AuthDataService';
 
-const defaultLocale = process.env.VUE_APP_I18N_LOCALE || 'en';
-
 /**
  * Liste des routes de l'application
  */
 const routes = [
-
   {
-    path: `/:lang(fr|en)`,
-    children: [
-      {
-        public: true,
-        path: '',
-        name: 'home',
-        component: () => import('../views/units/UnitView.vue')
-      },
-      {
-        public: true,
-        path: "auth/login",
-        name: "Login",
-        component: () => import('../views/auths/Login.vue')
-      },
-      {
-        public: true,
-        path: "auth/register",
-        name: "Register",
-        component: () => import('../views/auths/Register.vue')
-      },
-      {
-        public: true,
-        path: "unit",
-        name: "Unit",
-        component: () => import('../views/units/UnitView.vue')
-      },
-      {
-        public: false,
-        path: "stat",
-        name: "Stat",
-        component: () => import('../views/stats/StatView.vue')
-      }
-    ]
+    public: true,
+    path: '/',
+    name: 'home',
+    component: () => import('../views/units/UnitView.vue')
+  },
+  {
+    public: true,
+    path: "/auth/login",
+    name: "Login",
+    component: () => import('../views/auths/Login.vue')
+  },
+  {
+    public: true,
+    path: "/auth/register",
+    name: "Register",
+    component: () => import('../views/auths/Register.vue')
+  },
+  {
+    public: true,
+    path: "/unit",
+    name: "Unit",
+    component: () => import('../views/units/UnitView.vue')
+  },
+  {
+    public: false,
+    path: "/stat",
+    name: "Stat",
+    component: () => import('../views/stats/StatView.vue')
   }
 ]
 
@@ -57,32 +49,11 @@ const router = createRouter({
  * @returns 
  */
 let hasAccess = (to) => {
-  const publicPages = routes.flatMap(route => route.children).filter(route => route != undefined && route.public).map(route => route.path);
-
+  const publicPages = routes.filter(route => route != undefined && route.public).map(route => route.path);
   //check if auth required base on code under but juste contain the path and not the lang
-  const authRequired = !publicPages.includes(to.path.replace(`/${to.params.lang}`, '').replace('/', ''));
+  const authRequired = !publicPages.includes(to.path);
 
   return !(authRequired && !AuthDataService.isLogged());
-}
-
-
-/**
- * Enregistre la langue dans le local storage et dans l'objet i18n
- * 
- * @param {*} to | destination 
- */
-let setLang = (to) => {
-  console.log(to.params.lang + to)
-
-  let hasNewLang = to.params.lang != localStorage.getItem('lang');
-
-  //if no lang in local storage set current lang
-  if (hasNewLang) {
-    localStorage.setItem('lang', to.params.lang);
-
-
-  }
-
 }
 
 /**
@@ -90,18 +61,26 @@ let setLang = (to) => {
  */
 router.beforeEach((to, from, next) => {
 
-  if (!to.params.lang) {
-    return next(`/${defaultLocale}${to.path}`);
-  }
-
-
   if (!hasAccess(to)) {
+    console.log('no access');
     return next('auth/login?returnUrl=' + to.path);
   }
 
-  setLang(to);
-
   return next();
+});
+
+router.afterEach((to) => {
+  if (to.query.lang == undefined) {
+
+    let lang = localStorage.getItem('lang');
+
+    if (lang == undefined || lang == "undefined") {
+      lang = 'fr';
+      localStorage.setItem('lang', lang);
+    }
+
+    router.push({ path: to.path, query: { lang: lang } });
+  }
 });
 
 

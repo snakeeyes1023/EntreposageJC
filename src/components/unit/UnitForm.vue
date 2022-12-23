@@ -19,24 +19,28 @@
 
                         <v-col cols="12" sm="6">
                             <v-text-field v-model="currentUnit.quantity" :readonly="loading"
-                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('quantity')])]" :label="t('quantity')"
-                                required class="mb-2" clearable></v-text-field>
+                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('quantity')])]"
+                                :label="t('quantity')" required class="mb-2" clearable></v-text-field>
                         </v-col>
                         <v-col cols="12">
                             <v-textarea auto-grow v-model="currentUnit.description" :readonly="loading"
-                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('description')])]" :label="t('description')"
-                                required class="mb-2" clearable></v-textarea>
+                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('description')])]"
+                                :label="t('description')" required class="mb-2" clearable></v-textarea>
                         </v-col>
                         <v-divider></v-divider>
                         <v-col cols="12">
-                            <v-checkbox v-model="currentUnit.tags" label="Chauffée" value="0"></v-checkbox>
-                            <v-checkbox v-model="currentUnit.tags" label="Chauffée et éclairé" value="1"></v-checkbox>
-                        </v-col>
-                        <v-divider></v-divider>
-                        <v-col cols="12">
+                            
+                            <!--add icon check for all tags -->
+                            <v-switch  v-for="tag in tags" color="primary" v-bind:key="tag.id" v-model="tag.isSelected"
+                                :label="t(tag.text)"></v-switch>
 
-                            <v-switch color="primary" v-model="currentUnit.isTaxable" true-value="true"
-                                false-value="false" label="Taxable"></v-switch>
+
+                           
+                        </v-col>
+                        <v-divider></v-divider>
+                        <v-col cols="12">
+                            <v-switch color="primary" v-model="currentUnit.isTaxable"
+                                :label="t('taxable')"></v-switch>
                         </v-col>
 
                     </v-row>
@@ -92,14 +96,38 @@ export default {
             isTaxable: null,
             tags: [],
         },
+
+        tags: [
+            {
+                text: 'heated',
+                value: 0,
+                isSelected: false,
+                icon: 'mdi-fire',
+            },
+            {
+                text:  'allTimeAccess',
+                icon: 'mdi-open-in-new',
+                isSelected: false,
+                value: 1,
+            }
+        ],
         loading: false,
     }),
     mounted() {
+        
         if (this.id) {
             this.loading = true
             UnitDataService.getById(this.id).then((response) => {
-                console.log(response)
                 this.currentUnit = response.data
+
+                this.tags.forEach(tag => {
+                    this.currentUnit.tags.forEach(currentTag => {
+                        if (tag.value === currentTag) {
+                            tag.isSelected = true
+                        }
+                    })
+                })
+
             }).finally(() => {
                 this.loading = false
             })
@@ -110,6 +138,8 @@ export default {
             if (!this.formIsValid) return
 
             this.loading = true
+
+            this.currentUnit.tags = this.tags.filter(tag => tag.isSelected).map(tag => tag.value)
 
             let result = !this.currentUnit.id
                 ? UnitDataService.createNewOne(this.currentUnit)

@@ -1,11 +1,27 @@
 <template>
-    <v-card>
+    <v-card class="my-4">
         <v-img :src="card.src" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.7), rgba(0,0,0,.8)">
             <v-card-title class="text-white">
-                <span>{{ card.name }}</span>
-                 <span class="pricing">
-                    ({{ card.displayPricing }}$)
-                </span>
+                <v-row class="py-5 px-3">
+                    <span>{{ card.name }}</span>
+                    <span class="pricing">
+                        ({{ card.displayPricing }}$)
+                    </span>
+
+                    <v-spacer></v-spacer>
+
+                    <v-btn  size="large" icon color="info" class="mx-3">
+                        {{ card.totalAvailable }}
+                    </v-btn>
+
+
+                    <v-btn variant="outlined" size="large" icon color="info" @click="toggleVisibility">
+                        <v-badge :content="card.totalInUsed" color="error">
+                            <v-icon v-if="cardIsShown">mdi-eye-outline</v-icon>
+                            <v-icon v-else>mdi-eye-off-outline</v-icon>
+                        </v-badge>
+                    </v-btn>
+                </v-row>
             </v-card-title>
         </v-img>
 
@@ -25,7 +41,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
 
-            <v-btn color="success" prepend-icon="mdi-calendar" @click="this.reserve()">
+            <v-btn color="success" :disabled="card.totalAvailable <= 0" prepend-icon="mdi-calendar" @click="this.reserve()">
                 {{ t("reserve") }}
             </v-btn>
 
@@ -79,6 +95,7 @@ export default {
         return {
             showDialog: false,
             showReservationDialog: false,
+            cardIsShown: true
         };
     },
     setup() {
@@ -86,6 +103,9 @@ export default {
         return {
             t
         };
+    },
+    mounted() {
+        this.cardIsShown = this.card.show;
     },
     methods: {
         /**
@@ -124,12 +144,21 @@ export default {
          */
         closeReservationForm() {
             this.showReservationDialog = false
+            this.$emit('refreshUnits')
         },
         /**
          * Ouvre le formulaire de réservation
          */
         reserve() {
             this.showReservationDialog = true
+        },
+        /**
+         * Affiche ou cache l'unités
+         */
+        async toggleVisibility() {
+            await UnitDataService.updateVisibility(this.card.id, !this.cardIsShown);
+
+            this.cardIsShown = !this.cardIsShown;
         }
     },
     components: { UnitForm, ReservationForm }

@@ -88,6 +88,8 @@ export default defineComponent({
         },
         changeLang(lang) {
             this.$i18n.locale = lang;
+            this.$router.push({ query: { lang: lang } });
+            localStorage.setItem('lang', lang);
         }
     },
     data() {
