@@ -21,6 +21,12 @@
     "search": "Search",
     "priceFilter": "Price filter",
     "heated": "Heated",
+    "allTimeAccess": "All time access",
+    "percentageInUse": "Percentage in use",
+    "averageReservationDuration": "Average reservation duration",
+    "days": "Days",
+    "noData": "No data",
+
 
     "errorConnectingToServer": "Error connecting to server",
     "chooseReservationDateRange": "Choose reservation date range",
