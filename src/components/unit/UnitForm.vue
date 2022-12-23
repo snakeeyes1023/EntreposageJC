@@ -1,38 +1,46 @@
 <template>
     <v-sheet rounded>
         <v-card class="mx-auto px-6 py-8">
-            <v-form v-model="form" @submit.prevent="onSubmit">
+            <v-form v-model="formIsValid" @submit.prevent="onSubmit">
                 <v-container>
                     <v-row>
                         <v-col cols="12" sm="12">
-                            <v-text-field v-model="name" :readonly="loading" :rules="[required]" class="mb-2" clearable
-                                label="Nom à afficher"></v-text-field>
+                            <v-text-field v-model="currentUnit.name" :readonly="loading"
+                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('name')])]" :label="t('name')"
+                                required class="mb-2" clearable></v-text-field>
 
                         </v-col>
                         <v-col cols="12" sm="6">
 
-                            <v-text-field v-model="displayPricing" :readonly="loading" :rules="[required]" class="mb-2"
-                                clearable label="Prix"></v-text-field>
+                            <v-text-field v-model="currentUnit.displayPricing" :readonly="loading"
+                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('price')])]" :label="t('price')"
+                                required class="mb-2" clearable></v-text-field>
                         </v-col>
 
                         <v-col cols="12" sm="6">
-                            <v-text-field v-model="quantity" :readonly="loading" :rules="[required]" class="mb-2"
-                                clearable label="Quantité"></v-text-field>
+                            <v-text-field v-model="currentUnit.quantity" :readonly="loading"
+                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('quantity')])]"
+                                :label="t('quantity')" required class="mb-2" clearable></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-textarea auto-grow v-model="description" :readonly="loading" :rules="[required]"
-                                class="mb-2" clearable label="Description"></v-textarea>
-                        </v-col>
-                        <v-divider></v-divider>
-                        <v-col cols="12">
-                            <v-checkbox v-model="tags" label="Chauffée" value="0"></v-checkbox>
-                            <v-checkbox v-model="tags" label="Chauffée et éclairé" value="1"></v-checkbox>
+                            <v-textarea auto-grow v-model="currentUnit.description" :readonly="loading"
+                                :rules="[v => !!v || this.t('fieldIsRequired', [this.t('description')])]"
+                                :label="t('description')" required class="mb-2" clearable></v-textarea>
                         </v-col>
                         <v-divider></v-divider>
                         <v-col cols="12">
+                            
+                            <!--add icon check for all tags -->
+                            <v-switch  v-for="tag in tags" color="primary" v-bind:key="tag.id" v-model="tag.isSelected"
+                                :label="t(tag.text)"></v-switch>
 
-                            <v-switch color="primary" v-model="isTaxable" true-value="true" false-value="false"
-                                label="Taxable"></v-switch>
+
+                           
+                        </v-col>
+                        <v-divider></v-divider>
+                        <v-col cols="12">
+                            <v-switch color="primary" v-model="currentUnit.isTaxable"
+                                :label="t('taxable')"></v-switch>
                         </v-col>
 
                     </v-row>
@@ -40,12 +48,18 @@
 
                 <br>
 
-                <v-btn :disabled="!form" :loading="loading" class="float-right" color="info" size="large" type="submit"
-                    variant="elevated">
-                    Créer l'unité
+                <v-btn :disabled="!formIsValid" :loading="loading" class="float-right" color="info" size="large"
+                    prepend-icon="mdi-check" type="submit" variant="elevated">
+                    <div v-if="!!currentUnit.id">
+                        <span>{{ t("edit") }}</span>
+                    </div>
+                    <div v-else>
+                        <span>{{ t("create") }}</span>
+                    </div>
                 </v-btn>
-                <v-btn class="float-right mx-3" color="default" size="large" @click="closeForm()" variant="elevated">
-                    Annuler
+                <v-btn class="float-right mx-3" color="default" size="large" @click="closeForm()" variant="elevated"
+                    prepend-icon="mdi-cancel">
+                    {{ t("cancel") }}
                 </v-btn>
             </v-form>
         </v-card>
@@ -55,50 +69,97 @@
 
 
 import UnitDataService from "../../services/UnitDataService";
+import { useI18n } from 'vue-i18n'
 
 
 export default {
     name: 'UnitForm',
     props: {
         closeForm: { type: Function },
+        id: { type: String },
+    },
+    setup() {
+        const { t } = useI18n()
+        return {
+            t
+        };
     },
     data: () => ({
-        form: false,
-        displayPricing: null,
-        name: null,
-        description: null,
-        quantity: null,
-        isTaxable: null,
-        tags: [],
+        formIsValid: false,
 
+        currentUnit: {
+            id: null,
+            displayPricing: null,
+            name: null,
+            description: null,
+            quantity: null,
+            isTaxable: null,
+            tags: [],
+        },
+
+        tags: [
+            {
+                text: 'heated',
+                value: 0,
+                isSelected: false,
+                icon: 'mdi-fire',
+            },
+            {
+                text:  'allTimeAccess',
+                icon: 'mdi-open-in-new',
+                isSelected: false,
+                value: 1,
+            }
+        ],
         loading: false,
     }),
+    mounted() {
+        
+        if (this.id) {
+            this.loading = true
+            UnitDataService.getById(this.id).then((response) => {
+                this.currentUnit = response.data
+
+                this.tags.forEach(tag => {
+                    this.currentUnit.tags.forEach(currentTag => {
+                        if (tag.value === currentTag) {
+                            tag.isSelected = true
+                        }
+                    })
+                })
+
+            }).finally(() => {
+                this.loading = false
+            })
+        }
+    },
     methods: {
         async onSubmit() {
-            if (!this.form) return
+            if (!this.formIsValid) return
 
             this.loading = true
 
-            var body = JSON.stringify({
-                name: this.name,
-                description: this.description,
-                displayPricing: Number(this.displayPricing),
-                quantity: Number(this.quantity),
-                isTaxable: this.isTaxable === "true",
-                tags: [1],
-            });
+            this.currentUnit.tags = this.tags.filter(tag => tag.isSelected).map(tag => tag.value)
 
-            UnitDataService.create(body)
-            .then((response) => {
-                if (response.ok) {
+            let result = !this.currentUnit.id
+                ? UnitDataService.createNewOne(this.currentUnit)
+                : UnitDataService.updateById(this.currentUnit.id, this.currentUnit);
+
+            result.then((response) => {
+                if (response.status === 200) {
                     this.closeForm()
+                }
+                else {
+                    console.warn(response)
                 }
             }).finally(() => {
                 this.loading = false
             });
+
+
         },
         required(v) {
-            return !!v || 'Field is required'
+            return !!v || this.t("fieldIsRequired")
         },
     },
 }

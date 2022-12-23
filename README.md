@@ -1,30 +1,47 @@
-# Entreposage JC
+# Application de gestion de locaux
 
-## FTP Login
+## Description
 
-- hote : nfa.mesloc.com
-- User : reservation@mesloc.com
-- Password : Hsd2-2;$bqS9
+Ce projet est une application de gestion de locaux. Il permet de gérer les locaux a l'aide de réservations, créer des locaux, etc.
 
-## Project setup
-```
+## Procédure d'installation
+
+Installation des dépendances
+
+```bash
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
+Lancement du serveur
+
+```bash
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
+Déploiement du serveur
+
+```bash
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+## Base de données
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+La base de données est gérée par MongoDB. Il faut donc installer MongoDB sur votre machine.
+
+### Table User
+
+Regroupe les informations de l'utilisateur avec c'est information d'authentification.
+
+![image](dev/images/TableUser.png)
+
+### Table Unit
+
+Regroupe les informations d'un local. (Inclus les réservations)
+
+![image](dev/images/TableUnit.png)
+
+## Table RequestLogs
+
+Regroupe tous les requêtes effectuées sur l'application.
+
+![image](dev/images/TableRequestLogs.png)

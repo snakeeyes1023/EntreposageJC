@@ -1,58 +1,89 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import AuthDataService from '@/services/AuthDataService';
 
+/**
+ * Liste des routes de l'application
+ */
 const routes = [
   {
-    public : true,
+    public: true,
     path: '/',
     name: 'home',
-    component: HomeView
+    component: () => import('../views/units/UnitView.vue')
   },
   {
-    public : true,
-    path: '/about',
-    name: 'about',
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  },
-  {
-    public : true,
-    path: "/login",
+    public: true,
+    path: "/auth/login",
     name: "Login",
-    component: () => import(/* webpackChunkName: "about" */ '../views/auths/Login.vue')  
+    component: () => import('../views/auths/Login.vue')
   },
   {
-    public : true,
-    path: "/register",
+    public: true,
+    path: "/auth/register",
     name: "Register",
-    component: () => import(/* webpackChunkName: "about" */ '../views/auths/Register.vue')
+    component: () => import('../views/auths/Register.vue')
   },
   {
-    public : false,
+    public: true,
     path: "/unit",
     name: "Unit",
-    component: () => import(/* webpackChunkName: "about" */ '../views/units/UnitView.vue')
+    component: () => import('../views/units/UnitView.vue')
   },
-
+  {
+    public: false,
+    path: "/stat",
+    name: "Stat",
+    component: () => import('../views/stats/StatView.vue')
+  }
 ]
-
-
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
 
+/**
+ * Vérifie si l'utilisateur a accès à la page demandé en fonction de s'il est connecté ou non
+ * 
+ * @param {*} to 
+ * @returns 
+ */
+let hasAccess = (to) => {
+  const publicPages = routes.filter(route => route != undefined && route.public).map(route => route.path);
+  //check if auth required base on code under but juste contain the path and not the lang
+  const authRequired = !publicPages.includes(to.path);
+
+  return !(authRequired && !AuthDataService.isLogged());
+}
+
+/**
+ * Avant chaque changement de route on vérifie si l'utilisateur est connecté et si la langue est correcte
+ */
 router.beforeEach((to, from, next) => {
 
-  const publicPages = routes.filter(route => route.public).map(route => route.path);
-  const authRequired = !publicPages.includes(to.path);
-  const loggedIn = localStorage.getItem('user');
+  if (!hasAccess(to)) {
+    console.log('no access');
+    return next('auth/login?returnUrl=' + to.path);
+  }
 
-  if (authRequired && !loggedIn) {
-    next('/login');
-  } else {
-    next();
+  return next();
+});
+
+router.afterEach((to) => {
+  if (to.query.lang == undefined) {
+
+    let lang = localStorage.getItem('lang');
+
+    if (lang == undefined || lang == "undefined") {
+      lang = 'fr';
+      localStorage.setItem('lang', lang);
+    }
+
+    router.push({ path: to.path, query: { lang: lang } });
   }
 });
+
+
+
 
 export default router

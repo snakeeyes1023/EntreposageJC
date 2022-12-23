@@ -1,3 +1,44 @@
 {
-  "message": "hello i18n !!"
+  "app.title" : "Gestion de locaux",
+  "welcome": "Bonjour",
+  "manageLocals": "Gestion de locaux",
+  "locals": "Locaux",
+  "statistics": "Statistiques",
+  "login" : "Se connecter",
+  "logout" : "Se déconnecter",
+  "register" : "S'enregistrer",
+  "email" : "Email",
+  "password" : "Mot de passe",
+  "local" : "local",
+  "price" : "Prix",
+  "quantity" : "Quantité",
+  "isTaxable" : "Taxable",
+  "dateRange" : "Période",
+  "description" : "Description",
+  "create" : "Créer",
+  "name" : "Nom",
+  "createNewUnit" : "Créer un nouveau local",
+  "search" : "Rechercher",
+  "priceFilter" : "Filtrer par prix",
+  "heated": "Chauffé",
+  "allTimeAccess": "Accès 24/7",
+
+
+
+  "chooseReservationDateRange" : "Choisissez une période de réservation",
+  "reservationDetails" : "Détails de la réservation",
+  "reserve" : "Réserver",
+  "edit" : "Modifier",
+
+  "errorConnectingToServer" : "Erreur de connexion au serveur",
+
+  "confirmReservation" : "Confirmer la réservation",
+
+  "cancel" : "Annuler",
+
+
+
+  
+  "fieldIsRequired" : "Le champ {0} est requis",
+  "badCredentials": "Email ou mot de passe incorrect"
 }

@@ -1,0 +1,41 @@
+{
+  "app.title" : "Local reservation",
+    "welcome": "Hello",
+    "manageLocals": "Manage locals",
+    "locals": "Locals",
+    "statistics": "Statistics",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "local": "Local",
+    "price": "Price",
+    "quantity": "Quantity",
+    "isTaxable": "Is taxable",
+    "dateRange" : "Range",
+    "description": "Description",
+    "create": "Create",
+    "name": "Name",
+    "createNewUnit": "Create new local",
+    "search": "Search",
+    "priceFilter": "Price filter",
+    "heated": "Heated",
+
+    "errorConnectingToServer": "Error connecting to server",
+    "chooseReservationDateRange": "Choose reservation date range",
+    "reservationDetails": "Reservation details",
+    "reserve": "Reserve",
+    "edit": "Edit",
+
+    "confirmReservation": "Confirm reservation",
+
+    "cancel": "Cancel",
+    
+    
+
+    
+    "fieldIsRequired": "The field {0} is required",
+    "badCredentials": "Email or password is incorrect"
+
+  }
